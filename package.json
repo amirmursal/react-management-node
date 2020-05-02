@@ -7,9 +7,11 @@
   },
   "scripts": {
     "db": "start mongod",
-    "start": "node server/index.js",
-    "build": "cd react-ui/ && npm install && npm run build",
-    "dev": "concurrently \"npm run db\" \"npm run start\""
+    "server": "nodemon server/server.js",
+    "client": "npm run start --prefix react-ui",
+    "dev": "concurrently \"npm run db\" \"npm run server\" \"npm run client\"",
+    "start": "concurrently \"npm run server\" \"npm run client\"",
+    "install": "cd ./client && npm install"
   },
   "cacheDirectories": [
     "node_modules",

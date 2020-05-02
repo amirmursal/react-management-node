@@ -1,7 +1,20 @@
 {
   "name": "heroku-cra-node",
   "description": "web app made of create-react-app UI + Node API",
-  "scripts": {},
+  "devscripts": {
+    "db": "start mongod",
+    "server": "nodemon --experimental-modules server.mjs",
+    "client": "npm run start --prefix client",
+    "dev": "concurrently \"npm run db\" \"npm run server\" \"npm run client\"",
+    "start": "concurrently \"npm run server\" \"npm run client\"",
+    "install": "cd ./client && npm install"
+  },
+  "prodscripts": {
+    "db": "start mongod",
+    "start": "node server/index.js",
+    "build": "cd react-ui/ && npm install && npm run build",
+    "dev": "concurrently \"npm run db\" \"npm run start\""
+  },
   "env": {},
   "formation": {
     "web": {
