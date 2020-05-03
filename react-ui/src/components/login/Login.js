@@ -9,54 +9,57 @@ export default class Login extends React.Component {
     this.state = {
       username: "",
       password: "",
-      error: false
+      error: false,
     };
   }
 
   // common input change handler for imput and select
-  handleChange = event => {
+  handleChange = (event) => {
     this.setState({
-      [event.target.name]: event.target.value
+      [event.target.name]: event.target.value,
     });
   };
 
   // login user
-  login = setUser => {
+  login = (setUser) => {
     const { username, password } = this.state;
     const { history } = this.props;
 
     const user = {
       username: username,
-      password: password
+      password: password,
     };
     axios
       .post("/api/login", user)
-      .then(response => {
+      .then((response) => {
         this.setState({
           username: "",
-          password: ""
+          password: "",
         });
         if (response.data !== null) {
           localStorage.setItem("loggedIn", JSON.stringify(response.data));
           setUser(response.data);
-          history.push("/");
+          if (response.data.role !== "Admin") {
+            history.push("/");
+          } else {
+            history.push("/userManagement");
+          }
         } else {
           this.setState({
             username: "",
             password: "",
-            error: true
+            error: true,
           });
         }
       })
-      .catch(error => {
+      .catch((error) => {
         this.setState({
           username: "",
           password: "",
-          error: true
+          error: true,
         });
         console.log(error);
       });
-  
   };
 
   render() {
@@ -77,7 +80,7 @@ export default class Login extends React.Component {
               title="username"
               value={this.state.username}
               placeholder="Username"
-              onChange={event => this.handleChange(event)}
+              onChange={(event) => this.handleChange(event)}
               tabIndex="1"
             />
             <input
@@ -87,7 +90,7 @@ export default class Login extends React.Component {
               title="password"
               value={this.state.password}
               placeholder="Password"
-              onChange={event => this.handleChange(event)}
+              onChange={(event) => this.handleChange(event)}
               tabIndex="2"
             />
             <UserConsumer>

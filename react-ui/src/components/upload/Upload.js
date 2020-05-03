@@ -1,12 +1,11 @@
 import React from "react";
-import "./leaves.css";
 import axios from "axios";
 import ReactTable from "react-table";
 export default class LeaveStatus extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: [],
+      data: {},
       file: "",
       filename: "",
       loading: false,
@@ -39,7 +38,7 @@ export default class LeaveStatus extends React.Component {
    * Upload file to node api
    */
   uploadFile = () => {
-    const data = new FormData();
+    let data = new FormData();
     data.append("file", this.state.file);
     this.setState({
       loading: true,
@@ -84,6 +83,7 @@ export default class LeaveStatus extends React.Component {
                   </button>
                 </div>
               </div>
+              <div className="field">{this.state.data.message}</div>
             </div>
           </div>
         </div>

@@ -2,66 +2,21 @@ import React from "react";
 import Header from "../header/Header";
 import Login from "../login/Login";
 import { UserConsumer } from "../provider/UserProvider";
-import Home from "../home/Home";
-import MyLeaves from "../upload/MyLeaves";
-import ApplyLeave from "../upload/ApplyLeave";
-import LeaveRequest from "../upload/LeaveRequest";
+import Training from "../upload/Training";
 import Upload from "../upload/Upload";
 import UserManagement from "../employee/UserManagement";
 import { Route, Redirect } from "react-router-dom";
 
 const isLoggedIn = JSON.parse(localStorage.getItem("loggedIn"));
 
-const ApplyLeaveRoute = ({ component: ApplyLeave, ...rest }) => (
+const TrainingRoute = ({ component: Training, ...rest }) => (
   <UserConsumer>
     {({ user }) => (
       <Route
         {...rest}
         render={(props) =>
           user.role === "User" || isLoggedIn.role === "User" ? (
-            <ApplyLeave {...props} user={user} key={props.location.pathname} />
-          ) : (
-            <Redirect
-              to={{
-                pathname: "/login",
-              }}
-            />
-          )
-        }
-      />
-    )}
-  </UserConsumer>
-);
-
-const MyLeavesRoute = ({ component: MyLeaves, ...rest }) => (
-  <UserConsumer>
-    {({ user }) => (
-      <Route
-        {...rest}
-        render={(props) =>
-          user.role === "User" || isLoggedIn.role === "User" ? (
-            <MyLeaves {...props} user={user} />
-          ) : (
-            <Redirect
-              to={{
-                pathname: "/login",
-              }}
-            />
-          )
-        }
-      />
-    )}
-  </UserConsumer>
-);
-
-const LeaveRequestRoute = ({ component: LeaveRequest, ...rest }) => (
-  <UserConsumer>
-    {({ user }) => (
-      <Route
-        {...rest}
-        render={(props) =>
-          user.role === "Admin" || isLoggedIn.role === "Admin" ? (
-            <LeaveRequest {...props} user={user} />
+            <Training {...props} user={user} />
           ) : (
             <Redirect
               to={{
@@ -123,10 +78,7 @@ export default class Layout extends React.Component {
       <div>
         <Header history={this.props.history} />
         <div className="container">
-          <Route path="/" exact component={Home} />
-          <MyLeavesRoute path="/myLeaves" component={MyLeaves} />
-          <ApplyLeaveRoute path="/applyLeave" component={ApplyLeave} />
-          <LeaveRequestRoute path="/leaveRequest" component={LeaveRequest} />
+          <TrainingRoute path="/" exact component={Training} />
           <UploadRoute path="/upload" component={Upload} />
           <UserManagementRoute
             path="/userManagement"

@@ -22,23 +22,6 @@ export default class Header extends React.Component {
 
             <div className="navbar-menu">
               <div className="navbar-end">
-                {(user.role === "User" || isLoggedIn.role === "User") && (
-                  <div className="navbar-item has-dropdown is-hoverable">
-                    <Link className="navbar-link" to="#">
-                      Leaves
-                    </Link>
-
-                    <div className="navbar-dropdown">
-                      <Link className="navbar-item" to="/myLeaves">
-                        My Leaves
-                      </Link>
-                      <Link className="navbar-item" to="/applyLeave">
-                        Apply Leave
-                      </Link>
-                    </div>
-                  </div>
-                )}
-
                 {(user.role === "Admin" || isLoggedIn.role === "Admin") && (
                   <div className="navbar-item has-dropdown is-hoverable">
                     <Link className="navbar-link" to="#">
@@ -55,7 +38,11 @@ export default class Header extends React.Component {
                   </div>
                 )}
 
-                <div className="navbar-item" onClick={() => this.logout()}>
+                <div
+                  className="navbar-item"
+                  style={{ cursor: "pointer" }}
+                  onClick={() => this.logout()}
+                >
                   Logout
                 </div>
               </div>
