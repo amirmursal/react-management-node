@@ -14,7 +14,7 @@ const PORT = process.env.PORT || 5000;
 var storage = multer.diskStorage({
   //multers disk storage settings
   destination: function (req, file, cb) {
-    cb(null, "./uploads/");
+    cb(null, "./react-ui/public/");
   },
   filename: function (req, file, cb) {
     var datetimestamp = Date.now();
@@ -157,7 +157,9 @@ app.post("/upload", (req, res) => {
       return;
     }
     const file = new File();
-    file.file.data = fs.readFileSync(req.file.path);
+    file.data = fs.readFileSync(req.file.path);
+    file.filename = req.file.originalname;
+    file.path = req.file.path;
     file.save((err) => {
       if (err) res.send(err);
       res.json({ message: "File Uploaded" });

@@ -22,9 +22,8 @@ export default class Training extends React.Component {
     axios
       .get("/api/getFiles/")
       .then((response) => {
-        console.log(response.data);
         this.setState({
-          //data: response.data,
+          data: response.data,
           isLoading: false,
         });
       })
@@ -37,7 +36,24 @@ export default class Training extends React.Component {
     const columns = [
       {
         Header: "Index",
-        Cell: (props) => <span>{props.row._index + 1}</span>,
+        Cell: (props) => <span>{props.index + 1}</span>,
+      },
+      {
+        Header: "File Name",
+        Cell: (props) => {
+          return <span>{props.original.filename}</span>;
+        },
+      },
+      {
+        Header: "View",
+        Cell: (props) => {
+          console.log(props);
+          return (
+            <a href={props.original.path.split("\\")[2]} download>
+              Download
+            </a>
+          );
+        },
       },
     ];
     return (
