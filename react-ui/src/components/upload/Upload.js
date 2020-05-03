@@ -5,11 +5,15 @@ export default class LeaveStatus extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: {},
+      message: null,
+      data: [],
       file: "",
       filename: "",
       loading: false,
     };
+  }
+  componentDidMount() {
+    this.getFiles();
   }
 
   /**
@@ -38,20 +42,91 @@ export default class LeaveStatus extends React.Component {
    * Upload file to node api
    */
   uploadFile = () => {
-    let data = new FormData();
+    const data = new FormData();
     data.append("file", this.state.file);
     this.setState({
       loading: true,
     });
     axios.post("/upload", data).then((response) => {
       this.setState({
-        data: response.data,
+        message: response.data.message,
         loading: false,
       });
+      this.getFiles();
     });
   };
 
+  /**
+   * get all the files associated
+   */
+  getFiles = () => {
+    axios
+      .get("/api/getFiles/")
+      .then((response) => {
+        this.setState({
+          data: response.data,
+          isLoading: false,
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  /**
+   * delete file from db
+   */
+  deleteFile = (id) => {
+    axios
+      .delete("/api/deleteFile/" + id)
+      .then((response) => {
+        this.setState({
+          message: response.data.message,
+        });
+        this.getFiles();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   render() {
+    const columns = [
+      {
+        Header: "Index",
+        Cell: (props) => <span>{props.index + 1}</span>,
+      },
+      {
+        Header: "File Name",
+        Cell: (props) => {
+          return <span>{props.original.filename}</span>;
+        },
+      },
+      {
+        Header: "View",
+        Cell: (props) => {
+          return (
+            <a href={props.original.path.split("\\")[2]} download>
+              Download
+            </a>
+          );
+        },
+      },
+      {
+        Header: "Action",
+        Cell: (props) => {
+          console.log(props);
+          return (
+            <button
+              className="button is-danger"
+              onClick={() => this.deleteFile(props.original._id)}
+            >
+              Delete
+            </button>
+          );
+        },
+      },
+    ];
     return (
       <div className="panel LeavePanel">
         <p className="panel-heading">Upload Training Material</p>
@@ -83,13 +158,13 @@ export default class LeaveStatus extends React.Component {
                   </button>
                 </div>
               </div>
-              <div className="field">{this.state.data.message}</div>
+              <div className="field">{this.state.message}</div>
             </div>
           </div>
         </div>
-        {/*<div className="panel-block">
+        <div className="panel-block">
           <ReactTable
-            data={this.state.leaves}
+            data={this.state.data}
             columns={columns}
             defaultPageSize={5}
             className="-striped -highlight reactTable"
@@ -97,7 +172,7 @@ export default class LeaveStatus extends React.Component {
             loading={this.state.isLoading}
             loadingText="Loading..."
           />
-        </div>*/}
+        </div>
       </div>
     );
   }

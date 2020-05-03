@@ -174,6 +174,14 @@ router.get("/getFiles", (req, res) => {
   });
 });
 
+// delete user
+router.delete("/deleteFile/:_id", (req, res) => {
+  File.remove({ _id: req.params._id }, (err, file) => {
+    if (err) res.send(err);
+    res.json({ message: "File Removed" });
+  });
+});
+
 /* get leave info
  * @param user_id
  */
