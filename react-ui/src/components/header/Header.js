@@ -22,12 +22,12 @@ export default class Header extends React.Component {
 
             <div className="navbar-menu">
               <div className="navbar-end">
-                <div className="navbar-item has-dropdown is-hoverable">
-                  <Link className="navbar-link" to="#">
-                    Leaves
-                  </Link>
+                {(user.role === "User" || isLoggedIn.role === "User") && (
+                  <div className="navbar-item has-dropdown is-hoverable">
+                    <Link className="navbar-link" to="#">
+                      Leaves
+                    </Link>
 
-                  {(user.role !== "Admin" || isLoggedIn.role !== "Admin") && (
                     <div className="navbar-dropdown">
                       <Link className="navbar-item" to="/myLeaves">
                         My Leaves
@@ -36,28 +36,20 @@ export default class Header extends React.Component {
                         Apply Leave
                       </Link>
                     </div>
-                  )}
-
-                  {(user.role === "Admin" || isLoggedIn.role === "Admin") && (
-                    <div className="navbar-dropdown">
-                      <Link className="navbar-item" to="/leaveRequest">
-                        Approve / Reject
-                      </Link>
-                      <Link className="navbar-item" to="/leaveStatus">
-                        Leave Status
-                      </Link>
-                    </div>
-                  )}
-                </div>
+                  </div>
+                )}
 
                 {(user.role === "Admin" || isLoggedIn.role === "Admin") && (
                   <div className="navbar-item has-dropdown is-hoverable">
                     <Link className="navbar-link" to="#">
-                      Employee Activity
+                      Actions
                     </Link>
                     <div className="navbar-dropdown">
                       <Link className="navbar-item" to="/userManagement">
                         User Management
+                      </Link>
+                      <Link className="navbar-item" to="/upload">
+                        Upload Training
                       </Link>
                     </div>
                   </div>

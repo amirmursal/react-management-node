@@ -1,13 +1,12 @@
 import React from "react";
 import Header from "../header/Header";
 import Login from "../login/Login";
-//import Footer from "../footer/Footer";
 import { UserConsumer } from "../provider/UserProvider";
 import Home from "../home/Home";
-import MyLeaves from "../leaves/MyLeaves";
-import ApplyLeave from "../leaves/ApplyLeave";
-import LeaveRequest from "../leaves/LeaveRequest";
-import LeaveStatus from "../leaves/LeaveStatus";
+import MyLeaves from "../upload/MyLeaves";
+import ApplyLeave from "../upload/ApplyLeave";
+import LeaveRequest from "../upload/LeaveRequest";
+import Upload from "../upload/Upload";
 import UserManagement from "../employee/UserManagement";
 import { Route, Redirect } from "react-router-dom";
 
@@ -18,13 +17,13 @@ const ApplyLeaveRoute = ({ component: ApplyLeave, ...rest }) => (
     {({ user }) => (
       <Route
         {...rest}
-        render={props =>
+        render={(props) =>
           user.role === "User" || isLoggedIn.role === "User" ? (
             <ApplyLeave {...props} user={user} key={props.location.pathname} />
           ) : (
             <Redirect
               to={{
-                pathname: "/login"
+                pathname: "/login",
               }}
             />
           )
@@ -39,13 +38,13 @@ const MyLeavesRoute = ({ component: MyLeaves, ...rest }) => (
     {({ user }) => (
       <Route
         {...rest}
-        render={props =>
+        render={(props) =>
           user.role === "User" || isLoggedIn.role === "User" ? (
             <MyLeaves {...props} user={user} />
           ) : (
             <Redirect
               to={{
-                pathname: "/login"
+                pathname: "/login",
               }}
             />
           )
@@ -60,13 +59,13 @@ const LeaveRequestRoute = ({ component: LeaveRequest, ...rest }) => (
     {({ user }) => (
       <Route
         {...rest}
-        render={props =>
+        render={(props) =>
           user.role === "Admin" || isLoggedIn.role === "Admin" ? (
             <LeaveRequest {...props} user={user} />
           ) : (
             <Redirect
               to={{
-                pathname: "/login"
+                pathname: "/login",
               }}
             />
           )
@@ -76,18 +75,18 @@ const LeaveRequestRoute = ({ component: LeaveRequest, ...rest }) => (
   </UserConsumer>
 );
 
-const LeaveStatusRoute = ({ component: LeaveStatus, ...rest }) => (
+const UploadRoute = ({ component: Upload, ...rest }) => (
   <UserConsumer>
     {({ user }) => (
       <Route
         {...rest}
-        render={props =>
+        render={(props) =>
           user.role === "Admin" || isLoggedIn.role === "Admin" ? (
-            <LeaveStatus {...props} user={user} />
+            <Upload {...props} user={user} />
           ) : (
             <Redirect
               to={{
-                pathname: "/login"
+                pathname: "/login",
               }}
             />
           )
@@ -101,13 +100,13 @@ const UserManagementRoute = ({ component: UserManagement, ...rest }) => (
     {({ user }) => (
       <Route
         {...rest}
-        render={props =>
+        render={(props) =>
           user.role === "Admin" || isLoggedIn.role === "Admin" ? (
             <UserManagement {...props} user={user} />
           ) : (
             <Redirect
               to={{
-                pathname: "/login"
+                pathname: "/login",
               }}
             />
           )
@@ -128,13 +127,12 @@ export default class Layout extends React.Component {
           <MyLeavesRoute path="/myLeaves" component={MyLeaves} />
           <ApplyLeaveRoute path="/applyLeave" component={ApplyLeave} />
           <LeaveRequestRoute path="/leaveRequest" component={LeaveRequest} />
-          <LeaveStatusRoute path="/leaveStatus" component={LeaveStatus} />
+          <UploadRoute path="/upload" component={Upload} />
           <UserManagementRoute
             path="/userManagement"
             component={UserManagement}
           />
         </div>
-        {/*<Footer />*/}
       </div>
     ) : (
       <Login history={this.props.history} />

@@ -2,7 +2,6 @@ import React from "react";
 import moment from "moment";
 import axios from "axios";
 import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 
 export default class ApplyLeave extends React.Component {
   constructor(props) {
@@ -12,7 +11,7 @@ export default class ApplyLeave extends React.Component {
       endDate: new Date(),
       reason: "",
       message: "",
-      leaveID: null
+      leaveID: null,
     };
   }
 
@@ -21,39 +20,39 @@ export default class ApplyLeave extends React.Component {
     if (leaveID) {
       axios
         .get("/api/getLeaveDetails/" + leaveID)
-        .then(response => {
+        .then((response) => {
           this.setState({
             startDate: new Date(response.data.startDate),
             endDate: new Date(response.data.endDate),
             reason: response.data.reason,
             message: "",
-            leaveID: leaveID
+            leaveID: leaveID,
           });
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error);
         });
     }
   }
 
-  handleChangeStart = date => {
+  handleChangeStart = (date) => {
     this.setState({
       startDate: date,
-      message: ""
+      message: "",
     });
   };
 
-  handleChangeEnd = date => {
+  handleChangeEnd = (date) => {
     this.setState({
       endDate: date,
-      message: ""
+      message: "",
     });
   };
 
-  handleChangeReason = event => {
+  handleChangeReason = (event) => {
     this.setState({
       reason: event.target.value,
-      message: ""
+      message: "",
     });
   };
 
@@ -74,7 +73,7 @@ export default class ApplyLeave extends React.Component {
       userId: this.props.user._id,
       name: this.props.user.name,
       approved: false,
-      rejected: false
+      rejected: false,
     };
     let axiosCall;
     if (this.state.leaveID) {
@@ -86,15 +85,15 @@ export default class ApplyLeave extends React.Component {
       axiosCall = axios.post("/api/applyLeave", leaveData);
     }
     axiosCall
-      .then(response => {
+      .then((response) => {
         this.setState({
           startDate: new Date(),
           endDate: new Date(),
           reason: "",
-          message: response.data.message
+          message: response.data.message,
         });
       })
-      .catch(error => {
+      .catch((error) => {
         console.log(error);
       });
   };
@@ -149,7 +148,7 @@ export default class ApplyLeave extends React.Component {
                   type="text"
                   placeholder="reason"
                   value={this.state.reason}
-                  onChange={event => this.handleChangeReason(event)}
+                  onChange={(event) => this.handleChangeReason(event)}
                   rows="15"
                   cols="50"
                 />
