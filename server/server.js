@@ -2,7 +2,6 @@ const path = require("path");
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
-const moment = require("moment");
 const multer = require("multer");
 const fs = require("fs");
 const User = require("./models/user");
@@ -35,7 +34,7 @@ var upload = multer({
   fileFilter: function (req, file, callback) {
     //file filter
     if (
-      ["pptx"].indexOf(
+      ["pptx", "mp4"].indexOf(
         file.originalname.split(".")[file.originalname.split(".").length - 1]
       ) === -1
     ) {
@@ -171,162 +170,17 @@ router.get("/getFiles", (req, res) => {
   File.find({}, (err, files) => {
     if (err) res.send(err);
     res.json(files);
-  });
+  }); //.limit(2);
 });
 
 // delete user
 router.delete("/deleteFile/:_id", (req, res) => {
-  File.remove({ _id: req.params._id }, (err, file) => {
+  File.deleteOne({ _id: req.params._id }, (err, file) => {
     if (err) res.send(err);
     res.json({ message: "File Removed" });
   });
 });
 
-/* get leave info
- * @param user_id
- */
-router.get("/getLeaves/:userId", (req, res) => {
-  Leave.find({ userId: req.params.userId }, (err, leaves) => {
-    if (err) res.send(err);
-    res.json(leaves);
-  });
-});
-
-/**
- * Delete leave request
- * @param leave_id
- */
-router.delete("/deleteLeave/:leave_id", (req, res) => {
-  Leave.remove({ _id: req.params.leave_id }, (err, leave) => {
-    if (err) res.send(err);
-    res.json({ message: "leave request removed" });
-  });
-});
-
-/**
- * Get leave info
- * @param leave_id
- */
-router.get("/getLeaveDetails/:leave_id", (req, res) => {
-  Leave.findOne({ _id: req.params.leave_id }, (err, leave) => {
-    if (err) res.send(err);
-    res.json(leave);
-  });
-});
-
-/**
- * Update Leave info
- * @param leave_id
- */
-router.put("/updateLeave/:leave_id", (req, res) => {
-  Leave.findById(req.params.leave_id, (err, leave) => {
-    if (err) res.send(err);
-    leave.appliedDate = req.body.appliedDate;
-    leave.reuestedLeaveDays = req.body.reuestedLeaveDays;
-    leave.reason = req.body.reason;
-    leave.startDate = req.body.startDate;
-    leave.endDate = req.body.endDate;
-    leave.userId = req.body.userId;
-    leave.name = req.body.name;
-    leave.approved = req.body.approved;
-    leave.rejected = req.body.rejected;
-    leave.save((err) => {
-      if (err) res.send(err);
-      res.json({ message: "Leave Updated" });
-    });
-  });
-});
-
-/**
- * Get all users leave request
- */
-router.get("/getLeaveRequests", (req, res) => {
-  Leave.find({ rejected: false, approved: false }, (err, leaves) => {
-    if (err) res.send(err);
-    res.json(leaves);
-  });
-});
-
-/**
- * Reject Leave
- * @param leave_id
- */
-router.put("/rejectLeave/:leave_id", (req, res) => {
-  Leave.findById(req.params.leave_id, (err, leave) => {
-    if (err) res.send(err);
-    leave.approved = false;
-    leave.rejected = true;
-    leave.save((err) => {
-      if (err) res.send(err);
-      res.json({ message: "Leave Rejected" });
-    });
-  });
-});
-
-/**
- * Approve Leave
- * @param leave_id
- */
-router.put("/approveLeave/:leave_id", (req, res) => {
-  Leave.findById(req.params.leave_id, (err, leave) => {
-    if (err) res.send(err);
-    leave.approved = true;
-    leave.rejected = false;
-    leave.save((err) => {
-      if (err) res.send(err);
-      res.json({ message: "Leave Approved" });
-    });
-  });
-});
-
-/**
- * Get all leave request
- * It will give only one month back data from current date
- */
-router.get("/getRecentLeaveRequests", (req, res) => {
-  let startDate = new Date().toISOString();
-  let endDate = moment(new Date()).subtract(1, "months").toISOString();
-  Leave.find(
-    { appliedDate: { $gte: endDate, $lte: startDate } },
-    (err, leaves) => {
-      if (err) res.send(err);
-      res.json(leaves);
-    }
-  );
-});
-
-/**
- * Get all leave request
- * @param user_id
- * @param startDate
- * @param endDate
- */
-router.get("/getAllLeaveRequests/:user_id/:startDate/:endDate", (req, res) => {
-  const leaveQuery =
-    req.params.user_id !== "all"
-      ? {
-          userId: req.params.user_id,
-          appliedDate: {
-            $gte: moment(req.params.startDate).startOf("day"),
-            $lte: moment(req.params.endDate).endOf("day"),
-          },
-        }
-      : {
-          appliedDate: {
-            $gte: moment(req.params.startDate).startOf("day"),
-            $lte: moment(req.params.endDate).endOf("day"),
-          },
-        };
-  Leave.find(leaveQuery, (err, leaves) => {
-    if (err) res.send(err);
-    res.json(leaves);
-  });
-});
-
 app.listen(PORT, function () {
-  console.error(
-    `Node ${
-      isDev ? "dev server" : "cluster worker " + process.pid
-    }: listening on port ${PORT}`
-  );
+  console.error(`Node listening on port ${PORT}`);
 });
